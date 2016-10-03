@@ -11,7 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * 进行数据库的一些操作,为Province,City,County设置Set和load方法
+ * 进行数据库的一些操作,为Province,City,County设置Save和load方法
  * @author Administrator
  */
 public class CoolWeatherDB {
@@ -19,9 +19,10 @@ public class CoolWeatherDB {
 	public static final int VERSION = 1;
 	public static CoolWeatherDB coolWeatherDB;
 	private SQLiteDatabase db;
-
+	private CoolWeatherOpenHelper helper;
+	
 	private CoolWeatherDB(Context context) {
-		CoolWeatherOpenHelper helper = new CoolWeatherOpenHelper(context,
+		helper = new CoolWeatherOpenHelper(context,
 				DB_NAME, null, VERSION);
 		db = helper.getWritableDatabase();
 	}
@@ -117,6 +118,6 @@ public class CoolWeatherDB {
 				list.add(county);
 			} while (cursor.moveToNext());
 		}
-		return null;
+		return list;
 	}
 }
