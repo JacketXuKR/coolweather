@@ -1,11 +1,13 @@
 package com.coolweather.app.activity;
 
 import com.coolweather.app.R;
+import com.coolweather.app.service.AutoUpdateService;
 import com.coolweather.app.util.HttpCallbackListener;
 import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -88,6 +90,8 @@ public class WeatherActivity extends Activity {
 		temp2.setText(pre.getString("temp2", ""));
 		city_name.setVisibility(View.VISIBLE);
 		weather_info_layout.setVisibility(View.VISIBLE);
+		Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
+		startService(intent);
 	}
 
 	private void queryFromServer(final String address, final String type) {
