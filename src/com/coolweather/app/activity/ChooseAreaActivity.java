@@ -14,6 +14,7 @@ import com.coolweather.app.util.Utility;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -32,10 +33,10 @@ public class ChooseAreaActivity extends Activity {
 	public static final int TYPE_PROVINCE = 3;
 	public static final int TYPE_CITY = 4;
 	public static final int TYPE_COUNTY = 5;
-	
-	private TextView textView;//1
-	private ListView listView;//1
-	private ArrayAdapter<String> adapter;//1
+	public static final int TYPE_WEATHER = 6;
+	private TextView textView;// 1
+	private ListView listView;// 1
+	private ArrayAdapter<String> adapter;// 1
 	private List<String> dataList = new ArrayList<String>();
 	private ProgressDialog progress;
 	private List<Province> provinceList;
@@ -67,6 +68,11 @@ public class ChooseAreaActivity extends Activity {
 				} else if (level == LEVEL_CITY) {
 					selectCity = cityList.get(position);
 					queryCounties();
+				} else if(level == LEVEL_COUNTY) {
+					selectCounty = countyList.get(position);
+					Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+					intent.putExtra("countyCode", selectCounty.getCounty_code());
+					startActivity(intent);
 				}
 			}
 		});
@@ -149,21 +155,21 @@ public class ChooseAreaActivity extends Activity {
 					result = Utility.handleCountiesResponse(response,
 							selectCity.getId(), coolWeatherDB);
 				}
-				if(result) {
+				if (result) {
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
 							closeProgressDialog();
-							if(type == TYPE_PROVINCE) {
+							if (type == TYPE_PROVINCE) {
 								queryProvinces();
-							} else if(type == TYPE_CITY) {
+							} else if (type == TYPE_CITY) {
 								queryCities();
-							} else if(type == TYPE_COUNTY) {
+							} else if (type == TYPE_COUNTY) {
 								queryCounties();
 							}
 						}
 					});
-					
+
 				} else {
 					runOnUiThread(new Runnable() {
 						@Override
@@ -175,7 +181,7 @@ public class ChooseAreaActivity extends Activity {
 						}
 					});
 				}
- 			}
+			}
 
 			@Override
 			public void onError(Exception e) {
@@ -190,31 +196,33 @@ public class ChooseAreaActivity extends Activity {
 			}
 		});
 	}
-	
+
 	/**
 	 * showProgressDialog();
 	 */
 	private void showProgressDialog() {
-		if(progress == null) {
+		if (progress == null) {
 			progress = new ProgressDialog(this);
 			progress.setMessage("ÕýÔÚ¼ÓÔØ...");
 			progress.setCancelable(false);
 		}
 		progress.show();
 	}
+
 	/**
 	 * closeProgressDialog();
 	 */
 	private void closeProgressDialog() {
-		if(progress != null) {
+		if (progress != null) {
 			progress.dismiss();
 		}
 	}
+
 	@Override
 	public void onBackPressed() {
-		if(level == LEVEL_COUNTY) {
+		if (level == LEVEL_COUNTY) {
 			queryCities();
-		} else if(level == LEVEL_CITY) {
+		} else if (level == LEVEL_CITY) {
 			queryProvinces();
 		} else {
 			finish();
